@@ -16,10 +16,14 @@ namespace API
             {
                 opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            // allows cross origin resource sharing
+            builder.Services.AddCors();
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            // specifying what can be shared and with who
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:63967", "https://localhost:63967"));
 
             app.MapControllers();
 
