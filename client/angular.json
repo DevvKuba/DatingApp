@@ -5,17 +5,7 @@
   "projects": {
     "client": {
       "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "standalone": false
-        },
-        "@schematics/angular:directive": {
-          "standalone": false
-        },
-        "@schematics/angular:pipe": {
-          "standalone": false
-        }
-      },
+      "schematics": {},
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -68,6 +58,12 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+          "options": {
+            "ssl": true,
+            "sslCert": "./ssl/localhost.pem",
+            "sslKey": "./ssl/localhost-key.pem"
+
+          },
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
@@ -77,13 +73,7 @@
               "buildTarget": "client:build:development"
             }
           },
-          "defaultConfiguration": "development",
-          "options": {
-            "ssl":true,
-            "sslCert":"./ssl/localhost.pem",
-            "sslKey": "./ssl/localhost-key.pem",
-            "port": 63967
-          }
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
@@ -105,14 +95,13 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [],
-            "karmaConfig": "karma.conf.js"
+            "scripts": []
           }
         }
       }
     }
   },
   "cli": {
-    "analytics": "d378f1dc-d7e0-49be-8e3b-656a831c073a"
+    "analytics": false
   }
 }
