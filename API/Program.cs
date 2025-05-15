@@ -1,4 +1,5 @@
 using API.Extensions;
+using API.Middleware;
 
 namespace API
 {
@@ -15,6 +16,8 @@ namespace API
             builder.Services.AddIdentityServices(builder.Configuration);
 
             var app = builder.Build();
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             // Configure the HTTP request pipeline.
             // specifying what can be shared and with who
