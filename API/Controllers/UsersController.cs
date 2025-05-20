@@ -8,6 +8,8 @@ namespace API.Controllers
     // Primary constructor injecting DataContext
     // context or users endpoint
 
+
+    // user needs to be autherized / logged in before utilising get requests
     [Authorize]
     public class UsersController(IUserRepository userRepositary) : BaseApiController
     {
