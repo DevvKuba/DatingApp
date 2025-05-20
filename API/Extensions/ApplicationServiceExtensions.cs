@@ -17,9 +17,13 @@ namespace API.Extensions
             {
                 opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
             });
+
             // allows cross origin resource sharing
             services.AddCors();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            // sets our default mapper to the one specificed through our AutoMapperProfiles.cs
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             return services;
 
