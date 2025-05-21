@@ -24,6 +24,8 @@ public class AppUser
 
     public string? Interests { get; set; }
 
+    public string? LookingFor { get; set; }
+
     public required string City { get; set; }
 
     public required string Country { get; set; }
