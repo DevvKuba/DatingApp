@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API;
 
+// where we aquire methods that interact with the database 
 public class UserRepository(DataContext context, IMapper mapper) : IUserRepository
 {
     public async Task<MemberDto?> GetMemberAsync(string username)

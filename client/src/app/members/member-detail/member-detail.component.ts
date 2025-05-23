@@ -17,6 +17,7 @@ export class MemberDetailComponent implements OnInit {
   member?: Member;
   images: GalleryItem[] = [];
   
+  // upon going to this route we load the member making it unique to that person
   ngOnInit(): void {
     this.loadMember();
   }
