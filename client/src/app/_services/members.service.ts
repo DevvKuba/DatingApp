@@ -11,8 +11,11 @@ export class MembersService {
   
   private http = inject(HttpClient);
   baseUrl = environment.apiUrl;
+
+  //local cache
   members = signal<Member[]>([]);
 
+  // gets members from the API and stores them in memory(in the signal);
   getMembers(){
     return this.http.get<Member[]>(this.baseUrl + 'users').subscribe({
       next: members => this.members.set(members) 

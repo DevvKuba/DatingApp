@@ -19,12 +19,7 @@ namespace API.Interfaces
 
         Task<MemberDto?> GetMemberAsync(string username);
 
-
-
-
-
-
-
-
+        //removed
+        //Task<Action<IMappingOperationOptions<object, void>>> GetUserByUsernameAsync(Func<string> getUsername);
     }
 }
