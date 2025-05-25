@@ -42,7 +42,9 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
+            // need to include photos As entity framework is lazy how it doesn't provide child data List<Photo> Photos
+            var user = await context.Users.Include(p => p.Photos)
+                .FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
             if (user == null) return Unauthorized("Invalid username");
 
             // salt provided to recompute hash of password
@@ -60,12 +62,9 @@ namespace API.Controllers
             {
                 Username = user.UserName,
                 Token = tokenService.CreateToken(user),
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             };
         }
-
-
-
-
 
 
 

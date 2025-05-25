@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Member } from '../_models/member';
 import { of, tap } from 'rxjs';
+import { Photo } from '../_models/photo';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,37 @@ export class MembersService {
         this.members.update(members => members.map(m => m.username === member.username ? member : m))
       })
     )
+  }
+
+
+  setMainPhoto(photo: Photo){
+    return this.http.put(this.baseUrl + 'users/set-main-photo/' + photo.id, {})
+    // below functionality updates the members array , specifically m or member making sure it includes the photo
+    // m.photoUrl being equal to the passed photo.url, clicked photo
+    .pipe(
+      tap(() => {
+        this.members.update(members => members.map(m => {
+          if(m.photos.includes(photo)){
+            m.photoUrl = photo.url
+          }
+          return m;
+        }))
+      })
+    )
+  }
+
+  deletePhoto(photo: Photo){
+    return this.http.delete(this.baseUrl + 'users/delete-photo/' + photo.id).pipe(
+      tap(() => {
+        this.members.update(members => members.map(m => {
+          // if members arr still includes photo we deleted filter it from the array
+          if(m.photos.includes(photo)){
+            m.photos = m.photos.filter(x => x.id !== photo.id)
+          }
+          return m;
+        }))
+      })
+    );
   }
 
   
