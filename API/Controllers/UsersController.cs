@@ -73,6 +73,9 @@ namespace API.Controllers
                 PublicId = result.PublicId,
             };
 
+            // auto sets to main photo if its their first photo
+            if (user.Photos.Count == 0) photo.IsMain = true;
+
             user.Photos.Add(photo);
             if (await userRepository.SaveAllAsync())
                 return CreatedAtAction(nameof(GetUser), new { username = user.UserName }, mapper.Map<PhotoDto>(photo));
@@ -123,7 +126,7 @@ namespace API.Controllers
 
             if (await userRepository.SaveAllAsync()) return Ok();
 
-            return BadRequest("Probelm deleted photo");
+            return BadRequest("Problem deleted photo");
         }
 
     }
