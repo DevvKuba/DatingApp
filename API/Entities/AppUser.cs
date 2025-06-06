@@ -1,14 +1,10 @@
-﻿namespace API.Entities;
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace API.Entities;
 
 // User Schema for the database
-public class AppUser
+public class AppUser : IdentityUser<int>
 {
-    // Id default Primary key
-    public int Id { get; set; }
-    public required string UserName { get; set; }
-
-    public byte[] PasswordHash { get; set; } = [];
-    public byte[] PasswordSalt { get; set; } = [];
 
     public DateOnly DateOfBirth { get; set; }
 
@@ -40,6 +36,9 @@ public class AppUser
     public List<Message> MessagesSent { get; set; } = [];
 
     public List<Message> MessagesRecieved { get; set; } = [];
+
+    // join table
+    public ICollection<AppUserRole> UserRoles { get; set; } = [];
 
 
 
