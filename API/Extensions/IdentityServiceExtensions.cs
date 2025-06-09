@@ -32,6 +32,24 @@ namespace API.Extensions
                         ValidateIssuer = false,
                         ValidateAudience = false,
                     };
+
+                    // how jwt bearer tokens are extracted for SignalR connections
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            // getting accessToken from query string of the incoming Http request
+                            var accessToken = context.Request.Query["access_token"];
+
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                            {
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             services.AddAuthorizationBuilder()

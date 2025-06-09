@@ -2,6 +2,7 @@
 using API.Helpers;
 using API.Interfaces;
 using API.Services;
+using API.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Extensions
@@ -32,6 +33,9 @@ namespace API.Extensions
             // sets our default mapper to the one specificed through our AutoMapperProfiles.cs
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+            services.AddSignalR();
+            // always be available and shared when application is running
+            services.AddSingleton<PresenceTracker>();
 
 
             return services;
