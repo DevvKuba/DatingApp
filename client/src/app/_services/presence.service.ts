@@ -21,6 +21,7 @@ export class PresenceService {
     .build();
     this.hubConnection.start().catch(error => console.log(error));
 
+    // handlers are set up
     this.hubConnection.on('UserIsOnline', username => {
       this.toastr.info(username + ' has connected');
     });
