@@ -23,6 +23,8 @@ namespace API.Extensions
 
             // allows cross origin resource sharing
             services.AddCors();
+            // whenever you need the Interface pass the class instead, 
+            // e.g. passing in IUserRepositary userRepository => allows for UserRepository functionality
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ILikesRepository, LikesRepository>();

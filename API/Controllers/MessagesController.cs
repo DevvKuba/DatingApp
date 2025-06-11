@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [Authorize]
-    public class MessagesController(IMessageRepository messageRepository, IUserRepository userRepositary, IMapper mapper) : BaseApiController
+    public class MessagesController(IMessageRepository messageRepository, IUserRepository userRepository, IMapper mapper) : BaseApiController
     {
         [HttpPost]
         public async Task<ActionResult<MessageDto>> CreateMessage(CreateMessageDto createMessageDto)
@@ -21,8 +21,8 @@ namespace API.Controllers
                 return BadRequest("You cannot message yourself");
             }
 
-            var sender = await userRepositary.GetUserByUsernameAsync(username);
-            var recipient = await userRepositary.GetUserByUsernameAsync(createMessageDto.RecipientUsername);
+            var sender = await userRepository.GetUserByUsernameAsync(username);
+            var recipient = await userRepository.GetUserByUsernameAsync(createMessageDto.RecipientUsername);
 
             if (recipient == null || sender == null || sender.UserName == null || recipient.UserName == null)
                 return BadRequest("Cannot send message at this time");
