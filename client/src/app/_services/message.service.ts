@@ -38,6 +38,7 @@ export class MessageService {
       this.messageThread.update(messages => [...messages, message])
     })
 
+    // loops through specific messages to update them in our Thread between the users
     this.hubConnection.on('UpdatedGroup', (group: Group) => {
       if(group.connections.some(x => x.username === otherUsername)){
         this.messageThread.update(messages => {
