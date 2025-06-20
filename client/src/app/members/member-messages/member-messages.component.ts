@@ -23,6 +23,7 @@ export class MemberMessagesComponent implements AfterViewChecked {
     })
   }
 
+  // updates view when scrolling
   ngAfterViewChecked(): void {
     this.scrollToBottom();
   }
