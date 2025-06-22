@@ -33,7 +33,10 @@ namespace API.Controllers
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
-            var user = await unitOfWork.UserRepository.GetMemberAsync(username);
+            var currentUsername = User.Identity?.Name;
+            if (currentUsername == null) return BadRequest("No one is logged in, cannot proceed");
+
+            var user = await unitOfWork.UserRepository.GetMemberAsync(currentUsername, username);
 
             if (user == null) { return NotFound(); }
 
@@ -79,7 +82,7 @@ namespace API.Controllers
             };
 
             // auto sets to main photo if its their first photo
-            if (user.Photos.Count == 0) photo.IsMain = true;
+            //if (user.Photos.Count == 0) photo.IsMain = true;
 
             user.Photos.Add(photo);
             if (await unitOfWork.Complete())
@@ -117,7 +120,7 @@ namespace API.Controllers
 
             if (user == null) return BadRequest("User not found");
 
-            var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+            var photo = await unitOfWork.PhotoRepository.GetPhotoById(photoId);
 
             if (photo == null || photo.IsMain) return BadRequest("This photo cannot be deleted");
 

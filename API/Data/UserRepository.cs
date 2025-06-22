@@ -11,8 +11,18 @@ namespace API;
 // where we aquire methods that interact with the database 
 public class UserRepository(DataContext context, IMapper mapper) : IUserRepository
 {
-    public async Task<MemberDto?> GetMemberAsync(string username)
+    public async Task<MemberDto?> GetMemberAsync(string loggedInUsername, string username)
     {
+        // if user is logged in then ignoreQueryFilter
+        if (loggedInUsername == username)
+        {
+            return await context.Users
+            .Where(x => x.UserName == username)
+            .IgnoreQueryFilters()
+            .ProjectTo<MemberDto>(mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
+        }
+
         return await context.Users
             // use normalisedUser == username.ToUpper() if need be
             .Where(x => x.UserName == username)
@@ -52,6 +62,16 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
     public async Task<AppUser>? GetUserByIdAsync(int id)
     {
         return await context.Users.FindAsync(id);
+    }
+
+    // method created in order to find user via photoId but also include their photos
+    public async Task<AppUser?> GetUserByPhotoIdAsync(int photoId)
+    {
+        return await context.Users
+            .Include(x => x.Photos)
+            .FirstOrDefaultAsync(x => x.Photos.Any(x => x.Id == photoId));
+        //.Where(x => x.Photos.Any(x => x.Id == photoId))
+
     }
 
     public async Task<AppUser>? GetUserByUsernameAsync(string username)

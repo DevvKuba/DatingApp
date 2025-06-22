@@ -3,13 +3,16 @@
 namespace API.Data
 {
     // A scoped service
-    public class UnitOfWork(DataContext context, IUserRepository userRepository, ILikesRepository likesRepository, IMessageRepository messageRepository) : IUnitOfWork
+    public class UnitOfWork(DataContext context, IUserRepository userRepository, ILikesRepository likesRepository,
+        IMessageRepository messageRepository, IPhotoRepository photoRepository) : IUnitOfWork
     {
         public IUserRepository UserRepository => userRepository;
 
         public IMessageRepository MessageRepository => messageRepository;
 
         public ILikesRepository LikesRepository => likesRepository;
+
+        public IPhotoRepository PhotoRepository => photoRepository;
 
         public async Task<bool> Complete()
         {

@@ -1,4 +1,7 @@
-﻿using API.Entities;
+﻿using API.DTO_s;
+using API.Entities;
+using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    public class AdminController(UserManager<AppUser> userManager) : BaseApiController
+    // figure out if needed
+    //[Authorize]
+    public class AdminController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IMapper mapper) : BaseApiController
     {
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("users-with-roles")]
@@ -51,9 +56,50 @@ namespace API.Controllers
 
         [Authorize(Policy = "ModeratePhotoRole")]
         [HttpGet("photos-to-moderate")]
-        public ActionResult GetPhotosForModeration()
+        public async Task<List<PhotoForApprovalDto>> GetPhotosForApproval()
         {
-            return Ok("Admins or moderators can see this");
+            var photos = await unitOfWork.PhotoRepository.GetUnapprovedPhotos();
+            return photos;
         }
+
+        [Authorize(Policy = "ModeratePhotoRole")]
+        [HttpPost("approve-photo/{id}")]
+        public async Task<ActionResult<PhotoForApprovalDto>> ApprovePhoto(int id)
+        {
+            var photo = await unitOfWork.PhotoRepository.GetPhotoById(id);
+            if (photo == null) return BadRequest("Photo to approve not found");
+            photo.IsApproved = true;
+
+            // user that is await the photo approval
+            //var user = await userManager.FindByIdAsync(photo.AppUserId.ToString());
+            var user = await unitOfWork.UserRepository.GetUserByPhotoIdAsync(id);
+            if (user == null) return BadRequest("User for approved photo not found");
+
+            if (!user.Photos.Any(x => x.IsMain)) photo.IsMain = true;
+
+            if (await unitOfWork.Complete())
+            {
+                var photoApproved = mapper.Map<PhotoForApprovalDto>(photo);
+                photoApproved.IsApprovedStatus = true;
+                return Ok(photoApproved);
+            }
+
+            return BadRequest("Database was not updated after approving the photo");
+        }
+
+        [Authorize(Policy = "ModeratePhotoRole")]
+        [HttpPost("reject-photo/{id}")]
+        public async Task<ActionResult> RejectPhoto(int id)
+        {
+            bool PhotoDeletedStatus = await unitOfWork.PhotoRepository.RemovePhoto(id);
+            if (PhotoDeletedStatus)
+            {
+                if (await unitOfWork.Complete()) return Ok();
+                return BadRequest("Database was not updated after rejecting the photo");
+            }
+            return BadRequest("Photo was not deleted from Users photos");
+        }
+
+
     }
 }
