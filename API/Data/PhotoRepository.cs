@@ -30,15 +30,10 @@ namespace API.Data
             return unapprovedPhotos;
         }
 
-        public async Task<bool> RemovePhoto(int id)
+        public void RemovePhoto(Photo photo)
         {
-            // need to get the specific users photo, access their Photos and remove
-            var photo = await context.FindAsync<Photo>(id);
-            var photoUser = await context.FindAsync<AppUser>(photo.AppUserId);
-            photoUser.Photos.Remove(photo);
-
-            if (!photoUser.Photos.Contains(photo)) return true;
-            return false;
+            // all expansive logic in the controller
+            context.Remove(photo);
         }
     }
 }

@@ -69,9 +69,8 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
     {
         return await context.Users
             .Include(x => x.Photos)
+            .IgnoreQueryFilters()
             .FirstOrDefaultAsync(x => x.Photos.Any(x => x.Id == photoId));
-        //.Where(x => x.Photos.Any(x => x.Id == photoId))
-
     }
 
     public async Task<AppUser>? GetUserByUsernameAsync(string username)

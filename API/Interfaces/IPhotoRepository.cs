@@ -9,6 +9,6 @@ namespace API.Interfaces
 
         Task<Photo> GetPhotoById(int id);
 
-        Task<bool> RemovePhoto(int id);
+        void RemovePhoto(Photo photo);
     }
 }
